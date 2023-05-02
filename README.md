@@ -20,7 +20,10 @@ You can check out the existing IDIOMS definitions defined at the end of the scri
 There are two groups of idioms, one is strict (specific ), the other is much --loose er set of idioms (.*). You might think of it this way, the default set of idioms might get you a sufficient selection of gadgets, but if you're feeling desperate/brave or explorative, you might want to try using the --loose idioms
 
 ## How to install
-Start with the dependencies, this requires rp++ already installed to path (--file mode only), aside from that, also requires colorama and cpick libraries:
+Start with the dependencies, this requires rp++ already installed to path (--file mode only):
+https://github.com/0vercl0k/rp
+
+Aside from that, also requires colorama and cpick libraries:
 ```
 python3 -m pip install colorama cpick
 ```
