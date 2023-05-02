@@ -5,7 +5,7 @@ from colorama import Fore, Back
 from cpick import pick
 # from IPython import embed
 
-## ./rp++-ng -f msvcrt.dll --va 0x0 -r 5  -b "\x0a\x0d" --addbase 0x073310000--unique --sort -l
+## ./rp++-ng -f msvcrt.dll --va 0x0 -r 5  -b "\x0a\x0d" --addbase 0x073310000 --unique --sort -l
 ## ./rp++-ng -g msvcrt_curatedgadgets.txt
 
 
@@ -16,7 +16,7 @@ def get_args():
     group_interactive.add_argument('--number', '-n', action='store_true', default=False, help="ENABLE line numbering in ncurses interactive gadget selector.")
     group1 = ap.add_mutually_exclusive_group(required=True)
     group1.add_argument('--file', '-f', type=str, help="DLL to parse")
-    group1.add_argument('--gadgetfile', '-g', type=str, help='rp++ gadgets output file as input')
+    group1.add_argument('--gadgetfile', '-g', type=str, help='rp++ gadgets output file as input.')
     group_rplus = ap.add_argument_group("rp++ exclusive options")
     group_rplus.add_argument('--va', type=str, required="--file" in sys.argv or False, help='Virtual Address (rebase output)')
     ap.add_argument('--addbase', '-a', type=str, help='Add a baseaddr to line addresses before searching for badchars.  Note line output retains --va basing (or original basing if read from existing file).')
@@ -29,7 +29,14 @@ def get_args():
     group2.add_argument('--loose', '-l', action='store_true', default=False, help="Go through the loose idioms (WARN: much wider net!!! Suggested to use a lower --roplen)")
     ap.add_argument('--matches', '-m', nargs='+', default=[], help="Colorize --regex lines by --match patterns, space-separated list of pattern strings.  If supplied, this MUST be the last argument.")
     AP, garbage = ap.parse_known_args()
-    return vars(AP)
+    AP = vars(AP)
+    if type(AP['gadgetfile']) == str:
+        va = not "NoneType" in str(type(AP['va']))
+        roplen = not "NoneType" in str(type(AP['roplen']))
+        if va or roplen: 
+            print("--gadgetfile incompatible with --va or --roplen (the lines in the infile are already set in stone).\nHowever, --addbase can still be used here when filtering out lines containing badchars (add addbase to existing gadget address then filter out the gadget if address contains any --badchars)")
+            sys.exit()
+    return AP
 
 
 def uniesc_to_bytestr(instring):
