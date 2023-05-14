@@ -84,7 +84,7 @@ def cli_regex_to_idiom(regex,matches):
     return IDIOM
 
 def no_badchars_in_line(bads, line, addbase=None, address_pat=None):
-    pat = address_pat if not address_pat == None else re.compile('^.{2,8}:')
+    pat = address_pat if not address_pat == None else re.compile('^.{2,10}:')
     addr = re.findall(pat, line)[0][:-1]
     if not addbase == None:
         addr = add_octalstr_base_to_va__out_bytestr(addr, addbase)
@@ -118,7 +118,7 @@ def rp_plus_plus(args):
     CMD = shlex.split(f"rp++ -f {args['file']} -r {args['roplen']} --va {args['va']}")
     textlist = str(subprocess.check_output(CMD, shell=False, stderr=subprocess.STDOUT).decode('latin-1')).split("\n")
     pat = re.compile('\(\d+ found\)')
-    curated_gadgets = [re.sub(pat,'', collapse_multispace(line)) for line in textlist if ':' in line and '0x' in line and no_badchars_in_line(args['badchars'], line, args['addbase'], re.compile('^.{2,8}:')) == True ]
+    curated_gadgets = [re.sub(pat,'', collapse_multispace(line)) for line in textlist if ':' in line and '0x' in line and no_badchars_in_line(args['badchars'], line, args['addbase'], re.compile('^.{2,10}:')) == True ]
     if args['sort'] == True:
         return sorted(curated_gadgets,key=len)
     else:
@@ -129,7 +129,7 @@ def gadgetfile_in(args):
         textlist = F.read().split("\n")
         F.close()
     pat = re.compile('\(\d+ found\)')
-    curated_gadgets = [re.sub(pat,'', collapse_multispace(line)) for line in textlist if ':' in line and '0x' in line and no_badchars_in_line(args['badchars'], line, args['addbase'], re.compile('^.{2,8}:')) == True ]
+    curated_gadgets = [re.sub(pat,'', collapse_multispace(line)) for line in textlist if ':' in line and '0x' in line and no_badchars_in_line(args['badchars'], line, args['addbase'], re.compile('^.{2,10}:')) == True ]
     if args['sort'] == True:
         return sorted(curated_gadgets,key=len)
     else:
