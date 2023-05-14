@@ -137,7 +137,8 @@ def gadgetfile_in(args):
 
 def outfile_writer(ARGS, gadgets, verb):
     thefile = ARGS['file'] or ARGS['gadgetfile']
-    outfile_name = f"{thefile.split('.')[0]}_{verb}gadgets.txt"
+    filename = thefile.replace("./","").split("/")[-1].split(".")[0]
+    outfile_name = f"{filename}_{verb}gadgets.txt"
     with open(outfile_name,'w') as F:
         F.write('\n'.join(gadgets))
         F.close()
@@ -153,8 +154,9 @@ def post_process(matches,theline):
 def filter_gadgets(gadgets, linepat, subpats,postprocess=0):
     gadgetlist = []
     for line in gadgets:
+        found_badwords = [word for word in BAD_WORDS if word in line]
         linematch = re.findall(linepat, line)
-        if len(linematch) > 0:
+        if len(linematch) > 0 and len(found_badwords) == 0:
             theline = line
             matches = [re.findall(pat, theline) for pat in subpats]
             if len(matches) > 0:
@@ -199,7 +201,8 @@ def idiom_iter_interactive(ARGS, gadgets, TARGET_IDIOMS):
             except KeyboardInterrupt:
                 sys.exit()
             except Exception as X:
-                return RESULTS
+                selected = []
+                pass
             printable = []
             for theline in selected:
                 matches = [re.findall(pat, theline) for pat in subpats]
@@ -359,6 +362,13 @@ LOOSE_IDIOMS = [
     {': or \[...\], ... .* ret': ['or \[...\], ...']},
 ]
 
+BAD_WORDS = [
+    "clts", "hlt", "lmsw", "ltr", "lgdt", "lidt" ,"lldt", "mov cr", "mov dr",
+    "mov tr", "in ", "ins", "invlpg", "invd", "out", "outs", "cli", "sti",
+    "popf", "pushf", "int", "iret", "iretd", "swapgs", "wbinvd", "call",
+    "jmp", "leave", "ja", "jb", "jc", "je", "jr", "jg", "jl", "jn", "jo",
+    "jp", "js", "jz", "lock", "enter", "wait", "???"
+]
 
 if __name__=='__main__':
     main() 
