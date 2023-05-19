@@ -47,7 +47,8 @@ Doesn't hurt to have rp++-ng also installed to path
 
 usage: rp++-ng [-h] [--interactive] [--number] (--file FILE | --gadgetfile GADGETFILE) 
                 [--va VA] [--addbase ADDBASE] [--roplen ROPLEN] [--badchars BADCHARS] 
-                [--regex REGEX] [--sort] [--unique] [--loose] [--matches MATCHES [MATCHES ...]]
+                [--prepend] [--regex REGEX] [--sort] [--unique] [--loose] 
+                [--matches MATCHES [MATCHES ...]]
 
 rp++ wrapper, gadget finder
 
@@ -62,6 +63,7 @@ options:
                         read from existing file).
   --badchars BADCHARS, -b BADCHARS
                         Prune gadgets with instructions containing any [these] badchars
+  --prepend, -p         Prepend lines with '[base_filename]+[address],# '
   --regex REGEX, -R REGEX
                         Arbitrary REGEX line pattern (one-off search)
   --sort, -s            Sort gadgets by length
