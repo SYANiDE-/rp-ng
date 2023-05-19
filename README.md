@@ -12,6 +12,7 @@ A wrapper around rp++, extends existing rp++ and adds additional functionalities
 * ability to define your own arbitrary single idiom from the cli
 * --file to perform a gadget search on a dll
 * --gadgetfile to parse an existing rp++ output (lacks --va, --roplen functionality)
+* --prepend to change the line begin format to '<base_filename>+<address>,#:'
 
 This tool works on the principle of IDIOM definitions.  What is an idiom in this context?  An idiom is simply a collection of regex patterns.  Key == line match pattern, Value = list of patterns to colorize for output (non-interactive, interactive end-output).
 

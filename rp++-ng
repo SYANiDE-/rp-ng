@@ -18,10 +18,11 @@ def get_args():
     group1.add_argument('--file', '-f', type=str, help="DLL to parse")
     group1.add_argument('--gadgetfile', '-g', type=str, help='rp++ gadgets output file as input.')
     group_rplus = ap.add_argument_group("rp++ exclusive options")
-    group_rplus.add_argument('--va', type=str, required="--file" in sys.argv or False, help='Virtual Address (rebase output)')
+    group_rplus.add_argument('--va', '-v', type=str, required="--file" in sys.argv or False, help='Virtual Address (rebase output)')
     ap.add_argument('--addbase', '-a', type=str, help='Add a baseaddr to line addresses before searching for badchars.  Note line output retains --va basing (or original basing if read from existing file).')
     group_rplus.add_argument('--roplen', '-r', type=int, required="--file" in sys.argv or False, help='Limit gadget instruction count to (this) upper bound')
     ap.add_argument('--badchars', '-b', type=str, default='', help="Prune gadgets with instructions containing any [these] badchars")
+    ap.add_argument('--prepend', '-p', action='store_true', default=False, help="Prepend lines with '[base_filename]+[address],# ' ")
     group2 = ap.add_mutually_exclusive_group(required=False)
     group2.add_argument('--regex', '-R', type=str, default=None, help="Arbitrary REGEX line pattern (one-off search)")
     ap.add_argument('--sort', '-s', action='store_true', default=False, help="Sort gadgets by length")
@@ -151,13 +152,25 @@ def post_process(matches,theline):
             theline = newline
         return theline
 
-def filter_gadgets(gadgets, linepat, subpats,postprocess=0):
+def do_prepend_line(ARGS, line):
+    if ARGS['prepend'] == True:
+        thefile = ARGS['file'] or ARGS['gadgetfile']
+        filename = thefile.replace("./","").split("/")[-1].split(".")[0]
+        line_components = line.split(":")
+        address = line_components[0]
+        remainder = ':'.join(line_components[1:])
+        theline = f"{filename}+{address},#:{remainder}"
+    else:
+        theline = line
+    return theline
+
+def filter_gadgets(ARGS, gadgets, linepat, subpats,postprocess=0):
     gadgetlist = []
     for line in gadgets:
         found_badwords = [word for word in BAD_WORDS if word in line]
         linematch = re.findall(linepat, line)
         if len(linematch) > 0 and len(found_badwords) == 0:
-            theline = line
+            theline = do_prepend_line(ARGS,line)
             matches = [re.findall(pat, theline) for pat in subpats]
             if len(matches) > 0:
                 if postprocess == 1:
@@ -189,7 +202,7 @@ def idiom_iter_interactive(ARGS, gadgets, TARGET_IDIOMS):
             linepat = re.compile(k)
             subpats = [re.compile(x) for x in v]
             title = f"[+] REGEX: [{k}]"
-            gadgetlist = filter_gadgets(gadgets, linepat, subpats,postprocess=0)
+            gadgetlist = filter_gadgets(ARGS,gadgets, linepat, subpats,postprocess=0)
             print(f"{title} : {len(gadgetlist)} results")
             kwargs = {
                 "items": gadgetlist,
@@ -211,12 +224,12 @@ def idiom_iter_interactive(ARGS, gadgets, TARGET_IDIOMS):
     return RESULTS
 
 
-def idiom_iter(gadgets, IDIOM, NEXTIDIOM=None):
+def idiom_iter(ARGS, gadgets, IDIOM, NEXTIDIOM=None):
     for k,v in IDIOM.items():
         linepat = re.compile(k)
         subpats = [re.compile(x) for x in v]
         print(f"\n\n\n#### REGEX: {k} ####")
-        gadgetlist = filter_gadgets(gadgets, linepat, subpats, postprocess=1)
+        gadgetlist = filter_gadgets(ARGS, gadgets, linepat, subpats, postprocess=1)
         for gad in gadgetlist:
             print(gad) 
         resp = "XXX"
@@ -282,9 +295,9 @@ def main():
     else:
         for inum, idiom in enumerate(TARGET_IDIOMS):
             try:
-                idiom_iter(clean_gadgets, TARGET_IDIOMS[inum], TARGET_IDIOMS[inum+1])
+                idiom_iter(ARGS, clean_gadgets, TARGET_IDIOMS[inum], TARGET_IDIOMS[inum+1])
             except IndexError:
-                idiom_iter(clean_gadgets, TARGET_IDIOMS[inum], None)
+                idiom_iter(ARGS, clean_gadgets, TARGET_IDIOMS[inum], None)
 
 
 '''
