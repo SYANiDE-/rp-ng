@@ -170,7 +170,7 @@ def filter_gadgets(ARGS, gadgets, linepat, subpats,postprocess=0):
         found_badwords = [word for word in BAD_WORDS if word in line]
         linematch = re.findall(linepat, line)
         if len(linematch) > 0 and len(found_badwords) == 0:
-            theline = do_prepend_line(ARGS,line)
+            theline = line
             matches = [re.findall(pat, theline) for pat in subpats]
             if len(matches) > 0:
                 if postprocess == 1:
@@ -219,7 +219,7 @@ def idiom_iter_interactive(ARGS, gadgets, TARGET_IDIOMS):
             printable = []
             for theline in selected:
                 matches = [re.findall(pat, theline) for pat in subpats]
-                printable.append(post_process(matches, theline))
+                printable.append(do_prepend_line(ARGS,post_process(matches, theline)))
             RESULTS[k] = {'selected': selected, 'printable': printable}
     return RESULTS
 
@@ -231,7 +231,7 @@ def idiom_iter(ARGS, gadgets, IDIOM, NEXTIDIOM=None):
         print(f"\n\n\n#### REGEX: {k} ####")
         gadgetlist = filter_gadgets(ARGS, gadgets, linepat, subpats, postprocess=1)
         for gad in gadgetlist:
-            print(gad) 
+            print(do_prepend_line(ARGS,gad)) 
         resp = "XXX"
         print(f"""\n[=] CURR REGEX:\t\t{str(IDIOM.keys()).split(r"'")[1]} """)
         if not NEXTIDIOM == None:
@@ -340,39 +340,46 @@ IDIOMS = [
 
 
 LOOSE_IDIOMS = [
-    {': mov ..., ... .* ret' : ['mov ..., ...']},
-    {': push ... .* mov ..., \[esp\] .* ret' : ['push ... ', 'mov ..., \[esp\]']},
-    {': xchg ..., ... .* ret' : ['xchg ..., ...']},
+    {': xor ..., ... .* ret' :                  ['xor ..., ... ']},
+    {': xor ..., \[...\] .* ret' :              ['xor ..., \[...\]']},
+    {': xor \[...\], ... .* ret' :              ['xor \[...\], ...']},
+    {': push ... .* ret' :                      ['push ... ']},
+    {': pop ... .* ret' :                       ['pop ... ']},
+    {': xchg ..., ... .* ret' :                 ['xchg ..., ... ']},
+    {': xchg ..., \[...\] .* ret' :             ['xchg ..., \[...\]']},
+    {': xchg \[...\], ... .* ret' :             ['xchg \[...\], ...']},
+    {': xchg ..., \[...(\+|-).{1,10}\] .* ret' :['xchg ..., \[...(\+|-).{1,10}\]']},
+    {': xchg \[...(\+|-).{1,10}\], ... .* ret' :['xchg \[...(\+|-).{1,10}\], ...']},
+    {': xchg ..., \[...(\+|-)...(\+|-).{1,10}\] .* ret' :['xchg ...,\[...(\+|-)...(\+|-).{1,10}\]']},
+    {': xchg \[...(\+|-)...(\+|-).{1,10}\], ... .* ret' :['xchg \[...(\+|-)...(\+|-).{1,10}\], ...']},
+    {': mov ..., ... .* ret' :                  ['mov ..., ... ']},
+    {': mov ..., \[...\] .* ret' :              ['mov ..., \[...\]']},
+    {': mov \[...\], ... .* ret' :              ['mov \[...\], ...']},
+    {': mov ..., \[...(\+|-).{1,10}\] .* ret' : ['mov ..., \[...(\+|-).{1,10}\]']},
+    {': mov \[...(\+|-).{1,10}\], ... .* ret' : ['mov \[...(\+|-).{1,10}\], ...']},
+    {': mov ..., \[...(\+|-)...(\+|-).{1,10}\] .* ret' : ['mov ..., \[...(\+|-)...(\+|-).{1,10}\]']},
+    {': mov \[...(\+|-)...(\+|-).{1,10}\], ... .* ret' : ['mov \[...(\+|-)...(\+|-).{1,10}\], ...']},
+    {': inc ... .* ret' :                       ['inc ... ']},
+    {': inc \[...\] .* ret' :                   ['inc \[...\] ']},
+    {': dec ... .* ret' :                       ['dec ... ']},
+    {': dec \[...\] .* ret' :                   ['dec \[...\] ']},
+    {': add ..., ... .* ret' :                  ['add ..., ... ']},
+    {': add ..., \[...\] .* ret' :              ['add ..., \[...\]']},
+    {': add \[...\], ... .* ret' :              ['add \[...\], ...']},
+    {': sub ..., ... .* ret' :                  ['sub ..., ... ']},
+    {': sub ..., \[...\] .* ret' :              ['sub ..., \[...\]']},
+    {': sub \[...\], ... .* ret' :              ['sub \[...\], ...']},
+    {': and ..., ... .* ret' :                  ['and ..., ... ']},
+    {': and ..., \[...\] .* ret' :              ['and ..., \[...\]']},
+    {': and \[...\], ... .* ret' :              ['and \[...\], ...']},
+    {': or ..., ... .* ret' :                   ['or ..., ... ']},
+    {': or ..., \[...\] .* ret' :               ['or ..., \[...\]']},
+    {': or \[...\], ... .* ret' :               ['or \[...\], ...']},
+    {': neg ... .* ret' :                       ['neg ... ']},
+    {': not ... .* ret' :                       ['not ... ']},
+    {': push ... .* pop ... .* ret' :           ['push ... ', 'pop ... ']},
+    {': push ... .* mov ..., \[esp\] .* ret' :  ['push ... ', 'mov ..., \[esp\]']},
     {': push ... .* xchg ..., \[esp\] .* ret' : ['push ... ', 'xchg ..., \[esp\]']},
-    {': push ... .* ret' : ['push ... ']},
-    {': pop ... .* ret' : ['pop ... ']},
-    {': neg ... .* ret' : ['neg ... ']},
-    {': not ... .* ret' : ['not ... ']},
-    {': inc ... .* ret' : ['inc ... ']},
-    {': inc \[...\] .* ret' : ['inc \[...\] ']},
-    {': dec ... .* ret' : ['dec ... ']},
-    {': dec \[...\] .* ret' : ['dec \[...\] ']},
-    {': add ..., ... .* ret': ['add ..., ... ']},
-    {': add ..., \[...\] .* ret': ['add ..., \[...\]']},
-    {': add \[...\], ... .* ret': ['add \[...\], ...']},
-    {': sub ..., ... .* ret': ['sub ..., ... ']},
-    {': sub ..., \[...\] .* ret': ['sub ..., \[...\]']},
-    {': sub \[...\], ... .* ret': ['sub \[...\], ...']},
-    {': mov ..., ... .* ret': ['mov ..., ... ']},
-    {': mov ..., \[...\] .* ret': ['mov ..., \[...\]']},
-    {': mov \[...\], ... .* ret': ['mov \[...\], ...']},
-    {': xchg ..., ... .* ret': ['xchg ..., ... ']},
-    {': xchg ..., \[...\] .* ret': ['xchg ..., \[...\]']},
-    {': xchg \[...\], ... .* ret': ['xchg \[...\], ...']},
-    {': xor ..., ... .* ret': ['xor ..., ... ']},
-    {': xor ..., \[...\] .* ret': ['xor ..., \[...\]']},
-    {': xor \[...\], ... .* ret': ['xor \[...\], ...']},
-    {': and ..., ... .* ret': ['and ..., ... ']},
-    {': and ..., \[...\] .* ret': ['and ..., \[...\]']},
-    {': and \[...\], ... .* ret': ['and \[...\], ...']},
-    {': or ..., ... .* ret': ['or ..., ... ']},
-    {': or ..., \[...\] .* ret': ['or ..., \[...\]']},
-    {': or \[...\], ... .* ret': ['or \[...\], ...']},
 ]
 
 BAD_WORDS = [
