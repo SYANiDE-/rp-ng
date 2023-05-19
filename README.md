@@ -5,14 +5,14 @@ A wrapper around rp++, extends existing rp++ and adds additional functionalities
 * Interactive ncurses-based gadget selection tool by default (cpick)
 * Interactive mode writes selected gadgets to an outfile at the end, also outputs selected gadgets at end of runtime
 * text-based output (fallback) if ncurses is problematic or annoying, selectible with --interactive or -i, which disables interactive.
-* Filter out lines containing badchars in addresses
+* Filter out lines containing badchars in final addresses
 * --addbase: capability to add a base address to all gadget addresses BEFORE filtering out badchars, but AFTER --va already rebased the addresses
-* ability to --sort the gadget output by length of gadget line
-* ability to filter down to --uniuqe gadgets
-* ability to define your own arbitrary single idiom from the cli
+* ability to --sort the gadget list by length of gadget line
+* ability to filter down to --uniuqe gadgets (ignoring uniqueness of address)
+* ability to define your own arbitrary single idiom from the cli (--regex, opt: --matches)
 * --file to perform a gadget search on a dll
 * --gadgetfile to parse an existing rp++ output (lacks --va, --roplen functionality)
-* --prepend to change the line begin format to '<base_filename>+<address>,#:'
+* --prepend to change the line begin format to 'base_filename + address,#:'
 
 This tool works on the principle of IDIOM definitions.  What is an idiom in this context?  An idiom is simply a collection of regex patterns.  Key == line match pattern, Value = list of patterns to colorize for output (non-interactive, interactive end-output).
 
@@ -28,7 +28,7 @@ Aside from that, also requires colorama and cpick libraries:
 ```
 python3 -m pip install colorama cpick
 ```
-Doesn't hurt to have rp++-ng also installed to path
+
 
 ## Usage
 ```
