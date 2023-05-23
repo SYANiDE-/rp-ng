@@ -385,9 +385,8 @@ LOOSE_IDIOMS = [
 BAD_WORDS = [
     "clts", "hlt", "lmsw", "ltr", "lgdt", "lidt" ,"lldt", "mov cr", "mov dr",
     "mov tr", "in ", "ins", "invlpg", "invd", "out", "outs", "cli", "sti",
-    "popf", "pushf", "int", "iret", "iretd", "swapgs", "wbinvd", "call",
-    "jmp", "leave", "ja", "jb", "jc", "je", "jr", "jg", "jl", "jn", "jo",
-    "jp", "js", "jz", "lock", "enter", "wait", "???"
+    "popf", "pushf", "int", "iret", "iretd", "swapgs", "wbinvd",
+    "leave", "lock", "enter", "wait", "???"
 ]
 
 if __name__=='__main__':
