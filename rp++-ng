@@ -306,6 +306,8 @@ def main():
 ]
 '''
 IDIOMS = [
+    {': jmp ... ' :                             ['jmp ... ']},
+    {': call ... ' :                            ['call ... ']},
     {': push ... ; ret' : ['push ... ']},
     {': push ... .* pop ... .* ret' : ['push ... ', 'pop ... ']},
     {': pop ... ; ret' : ['pop ... ']},
@@ -340,6 +342,8 @@ IDIOMS = [
 
 
 LOOSE_IDIOMS = [
+    {': jmp ... ' :                             ['jmp ... ']},
+    {': call ... ' :                            ['call ... ']},
     {': xor ..., ... .* ret' :                  ['xor ..., ... ']},
     {': xor ..., \[...\] .* ret' :              ['xor ..., \[...\]']},
     {': xor \[...\], ... .* ret' :              ['xor \[...\], ...']},
