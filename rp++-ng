@@ -29,6 +29,7 @@ def get_args():
     ap.add_argument('--unique', '-u', action='store_true', default=False, help="remove duplicate gadgets")
     group2.add_argument('--loose', '-l', action='store_true', default=False, help="Go through the loose idioms (WARN: much wider net!!! Suggested to use a lower --roplen)")
     ap.add_argument('--matches', '-m', nargs='+', default=[], help="Colorize --regex lines by --match patterns, space-separated list of pattern strings.  If supplied, this MUST be the last argument.")
+    ap.add_argument('--debug', '-d', action='store_true', default=False, help="Add debug output to console (increase verbosity)")
     AP, garbage = ap.parse_known_args()
     AP = vars(AP)
     if type(AP['gadgetfile']) == str:
@@ -143,7 +144,8 @@ def outfile_writer(ARGS, gadgets, verb):
     with open(outfile_name,'w') as F:
         F.write('\n'.join(gadgets))
         F.close()
-    print(f"[+] {verb} gadget list saved to {outfile_name}")
+    if ARGS['debug'] == True:
+        print(f"[+] {verb} gadget list saved to {outfile_name}")
 
 def post_process(matches,theline):
     for matchset in matches:
@@ -188,7 +190,8 @@ def result_handler(ARGS, RESULTS, addl_verb):
         TO_OUTFILE.append(header)
         for item in outfile_results:
             TO_OUTFILE.append(item)
-        print(header)
+        if ARGS['debug'] == True:
+            print(header)
         for item in printable_results:
             print(item)
     if not len(RESULTS) == 0:
@@ -203,7 +206,8 @@ def idiom_iter_interactive(ARGS, gadgets, TARGET_IDIOMS):
             subpats = [re.compile(x) for x in v]
             title = f"[+] REGEX: [{k}]"
             gadgetlist = filter_gadgets(ARGS,gadgets, linepat, subpats,postprocess=0)
-            print(f"{title} : {len(gadgetlist)} results")
+            if ARGS['debug'] == True:
+                print(f"{title} : {len(gadgetlist)} results")
             kwargs = {
                 "items": gadgetlist,
                 'numbers': ARGS['number'],
@@ -228,7 +232,8 @@ def idiom_iter(ARGS, gadgets, IDIOM, NEXTIDIOM=None):
     for k,v in IDIOM.items():
         linepat = re.compile(k)
         subpats = [re.compile(x) for x in v]
-        print(f"\n\n\n#### REGEX: {k} ####")
+        if ARGS['debug'] == True:
+            print(f"\n\n\n#### REGEX: {k} ####")
         gadgetlist = filter_gadgets(ARGS, gadgets, linepat, subpats, postprocess=1)
         for gad in gadgetlist:
             print(do_prepend_line(ARGS,gad)) 
@@ -278,7 +283,8 @@ def main():
         clean_gadgets = gadgetfile_in(ARGS)
     if ARGS['unique'] == True:
         clean_gadgets = remove_duplicate_gadgets(clean_gadgets)
-        print("[+] Pruned gadgets to unique occurrences")
+        if ARGS['debug'] == True:
+            print("[+] Pruned gadgets to unique occurrences")
     outfile_writer(ARGS, clean_gadgets, "curated" if type(ARGS['file']) == str else "recycled" if type(ARGS['gadgetfile']) == str else "" )
     # embed()
     TARGET_IDIOMS = IDIOMS
