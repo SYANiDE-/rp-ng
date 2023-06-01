@@ -74,6 +74,7 @@ options:
                         Colorize --regex lines by --match patterns, space-separated list 
                         of pattern strings. If supplied, this MUST be the last
                         argument.
+  --debug, -d           Add debug output to console (increase verbosity)
 
 Interactivity options:
   --interactive, -i     DISABLE use of ncurses interactive gadget selector.
