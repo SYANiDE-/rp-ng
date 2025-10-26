@@ -119,7 +119,7 @@ def remove_duplicate_gadgets(gadgetlist):
 def rp_plus_plus(args):
     CMD = shlex.split(f"rp++ -f {args['file']} -r {args['roplen']} --va {args['va']}")
     textlist = str(subprocess.check_output(CMD, shell=False, stderr=subprocess.STDOUT).decode('latin-1')).split("\n")
-    pat = re.compile('\(\d+ found\)')
+    pat = re.compile(r'\(\d+ found\)')
     curated_gadgets = [re.sub(pat,'', collapse_multispace(line)) for line in textlist if ':' in line and '0x' in line and no_badchars_in_line(args['badchars'], line, args['addbase'], re.compile('^.{2,10}:')) == True ]
     if args['sort'] == True:
         return sorted(curated_gadgets,key=len)
@@ -130,7 +130,7 @@ def gadgetfile_in(args):
     with open(args['gadgetfile'],'r') as F:
         textlist = F.read().split("\n")
         F.close()
-    pat = re.compile('\(\d+ found\)')
+    pat = re.compile(r'\(\d+ found\)')
     curated_gadgets = [re.sub(pat,'', collapse_multispace(line)) for line in textlist if ':' in line and '0x' in line and no_badchars_in_line(args['badchars'], line, args['addbase'], re.compile('^.{2,10}:')) == True ]
     if args['sort'] == True:
         return sorted(curated_gadgets,key=len)
@@ -263,7 +263,7 @@ _r = f"{Fore.LIGHTRED_EX}"
 _R = f"{Fore.RESET}"
 name = f"{_g}rp++-ng{_R}"
 author=f"{_g}SYANiDE{_R}"
-BANNER=f"""
+BANNER=fr"""
   {name}{_r}?{_R}                           {_r}^^{_R}           
              {_y}_________{_R} {_y}_________{_R}      {_y}___{_R} {_y}__{_R}  {_y}__________{_R} {_r}`{_R}
    {_r}.{_R}       {_y}|{_R}    {_y}_o___|{_R}    {_y}_o___ ++-{_R} {_y}|{_R}   {_y}\{_R}  {_y}|/{_R}   {_y}/_____/{_R}  {_r}!{_R}
@@ -315,84 +315,84 @@ def main():
 ]
 '''
 IDIOMS = [
-    {': jmp ... ' :                             ['jmp ... ']},
-    {': call ... ' :                            ['call ... ']},
-    {': push ... ; ret' : ['push ... ']},
-    {': push ... .* pop ... .* ret' : ['push ... ', 'pop ... ']},
-    {': pop ... ; ret' : ['pop ... ']},
-    {': neg ... ; ret' : ['neg ... ']},
-    {': not ... ; ret' : ['not ... ']},
-    {': inc ... ; ret' : ['inc ... ']},
-    {': inc (dword )?\[...\] ; ret' : ['inc (dword )?\[...\] ']},
-    {': dec ... ; ret' : ['dec ... ']},
-    {': dec (dword )?\[...\] ; ret' : ['dec (dword )?\[...\] ']},
-    {': add ..., ... ; ret': ['add ..., ... ']},
-    {': add ..., (dword )?\[...\] ; ret': ['add ..., (dword )?\[...\]']},
-    {': add (dword )?\[...\], ... ; ret': ['add (dword )?\[...\], ...']},
-    {': sub ..., ... ; ret': ['sub ..., ... ']},
-    {': sub ..., (dword )?\[...\] ; ret': ['sub ..., (dword )?\[...\]']},
-    {': sub (dword )?\[...\], ... ; ret': ['sub (dword )?\[...\], ...']},
-    {': mov ..., ... ; ret': ['mov ..., ... ']},
-    {': mov ..., (dword )?\[...\] ; ret': ['mov ..., (dword )?\[...\]']},
-    {': mov (dword )?\[...\], ... ; ret': ['mov (dword )?\[...\], ...']},
-    {': xchg ..., ... ; ret': ['xchg ..., ... ']},
-    {': xchg ..., (dword )?\[...\] ; ret': ['xchg ..., (dword )?\[...\]']},
-    {': xchg (dword )?\[...\], ... ; ret': ['xchg (dword )?\[...\], ...']},
-    {': xor ..., ... ; ret': ['xor ..., ... ']},
-    {': xor ..., (dword )?\[...\] ; ret': ['xor ..., (dword )?\[...\]']},
-    {': xor (dword )?\[...\], ... ; ret': ['xor (dword )?\[...\], ...']},
-    {': and ..., ... ; ret': ['and ..., ... ']},
-    {': and ..., (dword )?\[...\] ; ret': ['and ..., (dword )?\[...\]']},
-    {': and (dword )?\[...\], ... ; ret': ['and (dword )?\[...\], ...']},
-    {': or ..., ... ; ret': ['or ..., ... ']},
-    {': or ..., (dword )?\[...\] ; ret': ['or ..., (dword )?\[...\]']},
-    {': or (dword )?\[...\], ... ; ret': ['or (dword )?\[...\], ...']},
+    {r': jmp ... ' :                             [r'jmp ... ']},
+    {r': call ... ' :                            [r'call ... ']},
+    {r': push ... ; ret' : ['push ... ']},
+    {r': push ... .* pop ... .* ret' : [r'push ... ', r'pop ... ']},
+    {r': pop ... ; ret' : ['pop ... ']},
+    {r': neg ... ; ret' : ['neg ... ']},
+    {r': not ... ; ret' : ['not ... ']},
+    {r': inc ... ; ret' : ['inc ... ']},
+    {r': inc (dword )?\[...\] ; ret' : [r'inc (dword )?\[...\] ']},
+    {r': dec ... ; ret' : ['dec ... ']},
+    {r': dec (dword )?\[...\] ; ret' : [r'dec (dword )?\[...\] ']},
+    {r': add ..., ... ; ret': ['add ..., ... ']},
+    {r': add ..., (dword )?\[...\] ; ret': [r'add ..., (dword )?\[...\]']},
+    {r': add (dword )?\[...\], ... ; ret': [r'add (dword )?\[...\], ...']},
+    {r': sub ..., ... ; ret': ['sub ..., ... ']},
+    {r': sub ..., (dword )?\[...\] ; ret': [r'sub ..., (dword )?\[...\]']},
+    {r': sub (dword )?\[...\], ... ; ret': [r'sub (dword )?\[...\], ...']},
+    {r': mov ..., ... ; ret': ['mov ..., ... ']},
+    {r': mov ..., (dword )?\[...\] ; ret': [r'mov ..., (dword )?\[...\]']},
+    {r': mov (dword )?\[...\], ... ; ret': [r'mov (dword )?\[...\], ...']},
+    {r': xchg ..., ... ; ret': ['xchg ..., ... ']},
+    {r': xchg ..., (dword )?\[...\] ; ret': [r'xchg ..., (dword )?\[...\]']},
+    {r': xchg (dword )?\[...\], ... ; ret': [r'xchg (dword )?\[...\], ...']},
+    {r': xor ..., ... ; ret': ['xor ..., ... ']},
+    {r': xor ..., (dword )?\[...\] ; ret': [r'xor ..., (dword )?\[...\]']},
+    {r': xor (dword )?\[...\], ... ; ret': [r'xor (dword )?\[...\], ...']},
+    {r': and ..., ... ; ret': ['and ..., ... ']},
+    {r': and ..., (dword )?\[...\] ; ret': [r'and ..., (dword )?\[...\]']},
+    {r': and (dword )?\[...\], ... ; ret': [r'and (dword )?\[...\], ...']},
+    {r': or ..., ... ; ret': ['or ..., ... ']},
+    {r': or ..., (dword )?\[...\] ; ret': [r'or ..., (dword )?\[...\]']},
+    {r': or (dword )?\[...\], ... ; ret': [r'or (dword )?\[...\], ...']},
 ]
 
 
 LOOSE_IDIOMS = [
-    {': jmp ... ' :                             ['jmp ... ']},
-    {': call ... ' :                            ['call ... ']},
-    {': xor ..., ... .* ret' :                  ['xor ..., ... ']},
-    {': xor ..., (dword )?\[...\] .* ret' :              ['xor ..., (dword )?\[...\]']},
-    {': xor (dword )?\[...\], ... .* ret' :              ['xor (dword )?\[...\], ...']},
-    {': push ... .* ret' :                      ['push ... ']},
-    {': pop ... .* ret' :                       ['pop ... ']},
-    {': xchg ..., ... .* ret' :                 ['xchg ..., ... ']},
-    {': xchg ..., (dword )?\[...\] .* ret' :             ['xchg ..., (dword )?\[...\]']},
-    {': xchg (dword )?\[...\], ... .* ret' :             ['xchg (dword )?\[...\], ...']},
-    {': xchg ..., (dword )?\[...(\+|-).{1,10}\] .* ret' :['xchg ..., (dword )?\[...(\+|-).{1,10}\]']},
-    {': xchg (dword )?\[...(\+|-).{1,10}\], ... .* ret' :['xchg (dword )?\[...(\+|-).{1,10}\], ...']},
-    {': xchg ..., (dword )?\[...(\+|-)...(\+|-).{1,10}\] .* ret' :['xchg ...,(dword )?\[...(\+|-)...(\+|-).{1,10}\]']},
-    {': xchg (dword )?\[...(\+|-)...(\+|-).{1,10}\], ... .* ret' :['xchg (dword )?\[...(\+|-)...(\+|-).{1,10}\], ...']},
-    {': mov ..., ... .* ret' :                  ['mov ..., ... ']},
-    {': mov ..., (dword )?\[...\] .* ret' :              ['mov ..., (dword )?\[...\]']},
-    {': mov (dword )?\[...\], ... .* ret' :              ['mov (dword )?\[...\], ...']},
-    {': mov ..., (dword )?\[...(\+|-).{1,10}\] .* ret' : ['mov ..., (dword )?\[...(\+|-).{1,10}\]']},
-    {': mov (dword )?\[...(\+|-).{1,10}\], ... .* ret' : ['mov (dword )?\[...(\+|-).{1,10}\], ...']},
-    {': mov ..., (dword )?\[...(\+|-)...(\+|-).{1,10}\] .* ret' : ['mov ..., (dword )?\[...(\+|-)...(\+|-).{1,10}\]']},
-    {': mov (dword )?\[...(\+|-)...(\+|-).{1,10}\], ... .* ret' : ['mov (dword )?\[...(\+|-)...(\+|-).{1,10}\], ...']},
-    {': inc ... .* ret' :                       ['inc ... ']},
-    {': inc (dword )?\[...\] .* ret' :                   ['inc (dword )?\[...\] ']},
-    {': dec ... .* ret' :                       ['dec ... ']},
-    {': dec (dword )?\[...\] .* ret' :                   ['dec (dword )?\[...\] ']},
-    {': add ..., ... .* ret' :                  ['add ..., ... ']},
-    {': add ..., (dword )?\[...\] .* ret' :              ['add ..., (dword )?\[...\]']},
-    {': add (dword )?\[...\], ... .* ret' :              ['add (dword )?\[...\], ...']},
-    {': sub ..., ... .* ret' :                  ['sub ..., ... ']},
-    {': sub ..., (dword )?\[...\] .* ret' :              ['sub ..., (dword )?\[...\]']},
-    {': sub (dword )?\[...\], ... .* ret' :              ['sub (dword )?\[...\], ...']},
-    {': and ..., ... .* ret' :                  ['and ..., ... ']},
-    {': and ..., (dword )?\[...\] .* ret' :              ['and ..., (dword )?\[...\]']},
-    {': and (dword )?\[...\], ... .* ret' :              ['and (dword )?\[...\], ...']},
-    {': or ..., ... .* ret' :                   ['or ..., ... ']},
-    {': or ..., (dword )?\[...\] .* ret' :               ['or ..., (dword )?\[...\]']},
-    {': or (dword )?\[...\], ... .* ret' :               ['or (dword )?\[...\], ...']},
-    {': neg ... .* ret' :                       ['neg ... ']},
-    {': not ... .* ret' :                       ['not ... ']},
-    {': push ... .* pop ... .* ret' :           ['push ... ', 'pop ... ']},
-    {': push ... .* mov ..., (dword )?\[esp\] .* ret' :  ['push ... ', 'mov ..., (dword )?\[esp\]']},
-    {': push ... .* xchg ..., (dword )?\[esp\] .* ret' : ['push ... ', 'xchg ..., (dword )?\[esp\]']},
+    {r': jmp ... ' :                             ['jmp ... ']},
+    {r': call ... ' :                            ['call ... ']},
+    {r': xor ..., ... .* ret' :                  ['xor ..., ... ']},
+    {r': xor ..., (dword )?\[...\] .* ret' :              [r'xor ..., (dword )?\[...\]']},
+    {r': xor (dword )?\[...\], ... .* ret' :              [r'xor (dword )?\[...\], ...']},
+    {r': push ... .* ret' :                      ['push ... ']},
+    {r': pop ... .* ret' :                       ['pop ... ']},
+    {r': xchg ..., ... .* ret' :                 ['xchg ..., ... ']},
+    {r': xchg ..., (dword )?\[...\] .* ret' :             [r'xchg ..., (dword )?\[...\]']},
+    {r': xchg (dword )?\[...\], ... .* ret' :             [r'xchg (dword )?\[...\], ...']},
+    {r': xchg ..., (dword )?\[...(\+|-).{1,10}\] .* ret' :[r'xchg ..., (dword )?\[...(\+|-).{1,10}\]']},
+    {r': xchg (dword )?\[...(\+|-).{1,10}\], ... .* ret' :[r'xchg (dword )?\[...(\+|-).{1,10}\], ...']},
+    {r': xchg ..., (dword )?\[...(\+|-)...(\+|-).{1,10}\] .* ret' :[r'xchg ...,(dword )?\[...(\+|-)...(\+|-).{1,10}\]']},
+    {r': xchg (dword )?\[...(\+|-)...(\+|-).{1,10}\], ... .* ret' :[r'xchg (dword )?\[...(\+|-)...(\+|-).{1,10}\], ...']},
+    {r': mov ..., ... .* ret' :                  ['mov ..., ... ']},
+    {r': mov ..., (dword )?\[...\] .* ret' :              [r'mov ..., (dword )?\[...\]']},
+    {': mov (dword )?\[...\], ... .* ret' :              [r'mov (dword )?\[...\], ...']},
+    {r': mov ..., (dword )?\[...(\+|-).{1,10}\] .* ret' : [r'mov ..., (dword )?\[...(\+|-).{1,10}\]']},
+    {r': mov (dword )?\[...(\+|-).{1,10}\], ... .* ret' : [r'mov (dword )?\[...(\+|-).{1,10}\], ...']},
+    {r': mov ..., (dword )?\[...(\+|-)...(\+|-).{1,10}\] .* ret' : [r'mov ..., (dword )?\[...(\+|-)...(\+|-).{1,10}\]']},
+    {r': mov (dword )?\[...(\+|-)...(\+|-).{1,10}\], ... .* ret' : [r'mov (dword )?\[...(\+|-)...(\+|-).{1,10}\], ...']},
+    {r': inc ... .* ret' :                       ['inc ... ']},
+    {r': inc (dword )?\[...\] .* ret' :                   [r'inc (dword )?\[...\] ']},
+    {r': dec ... .* ret' :                       ['dec ... ']},
+    {r': dec (dword )?\[...\] .* ret' :                   [r'dec (dword )?\[...\] ']},
+    {r': add ..., ... .* ret' :                  ['add ..., ... ']},
+    {r': add ..., (dword )?\[...\] .* ret' :              [r'add ..., (dword )?\[...\]']},
+    {r': add (dword )?\[...\], ... .* ret' :              [r'add (dword )?\[...\], ...']},
+    {r': sub ..., ... .* ret' :                  ['sub ..., ... ']},
+    {r': sub ..., (dword )?\[...\] .* ret' :              [r'sub ..., (dword )?\[...\]']},
+    {r': sub (dword )?\[...\], ... .* ret' :              [r'sub (dword )?\[...\], ...']},
+    {r': and ..., ... .* ret' :                  ['and ..., ... ']},
+    {r': and ..., (dword )?\[...\] .* ret' :              [r'and ..., (dword )?\[...\]']},
+    {r': and (dword )?\[...\], ... .* ret' :              [r'and (dword )?\[...\], ...']},
+    {r': or ..., ... .* ret' :                   ['or ..., ... ']},
+    {r': or ..., (dword )?\[...\] .* ret' :               [r'or ..., (dword )?\[...\]']},
+    {r': or (dword )?\[...\], ... .* ret' :               [r'or (dword )?\[...\], ...']},
+    {r': neg ... .* ret' :                       ['neg ... ']},
+    {r': not ... .* ret' :                       ['not ... ']},
+    {r': push ... .* pop ... .* ret' :           ['push ... ', 'pop ... ']},
+    {r': push ... .* mov ..., (dword )?\[esp\] .* ret' :  [r'push ... ', 'mov ..., (dword )?\[esp\]']},
+    {r': push ... .* xchg ..., (dword )?\[esp\] .* ret' : [r'push ... ', 'xchg ..., (dword )?\[esp\]']},
 ]
 
 BAD_WORDS = [
